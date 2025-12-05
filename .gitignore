@@ -1,0 +1,35 @@
+# General
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+*.swo
+*.orig
+
+# Maven
+**/target/
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+.mvn/wrapper/MavenWrapperDownloader.java
+
+# IntelliJ / IDEA
+.idea/
+*.iml
+out/
+
+# React Native / frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.expo/
+frontend/.expo-shared/
+frontend/.turbo/
+
+# Docker envs
+.env
+.env.local
+.env.*.local
+
+# Local caches
+.m2/
+.gradle/

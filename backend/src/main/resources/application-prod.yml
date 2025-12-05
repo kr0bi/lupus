@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://db:5432/lupus}
+    username: ${DB_USERNAME:lupus}
+    password: ${DB_PASSWORD:lupus}
+    driver-class-name: ${DB_DRIVER:org.postgresql.Driver}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+logging:
+  level:
+    root: INFO
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN
+
+app:
+  jwt:
+    secret: ${LUPUS_JWT_SECRET}
+    expiration-seconds: 3600

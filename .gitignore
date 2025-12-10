@@ -24,6 +24,7 @@ frontend/dist/
 frontend/.expo/
 frontend/.expo-shared/
 frontend/.turbo/
+frontend/package-lock.json
 
 # Docker envs
 .env

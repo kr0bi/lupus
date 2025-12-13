@@ -52,7 +52,15 @@ public class AuthService {
         user.setPasswordHash(passwordEncoder.encode(request.password()));
         user.setRoles(Set.of(Role.PLAYER));
         UserEntity saved = userRepository.save(user);
-        return ApiResponse.ok(AuthResponse.bearer(jwtService.generateToken(UserPrincipal.from(saved))));
+
+        String accessToken = jwtService.generateToken(UserPrincipal.from(saved));
+        return ApiResponse.ok(AuthResponse.of(
+            saved.getId(),
+            saved.getEmail(),
+            saved.getUsername(),
+            accessToken,
+            null // refreshToken non ancora implementato
+        ));
     }
 
     @Transactional(readOnly = true)
@@ -62,7 +70,15 @@ public class AuthService {
         UserEntity user = userRepository.findByUsername(request.usernameOrEmail())
                 .or(() -> userRepository.findByEmail(request.usernameOrEmail()))
                 .orElseThrow(() -> new BadRequestException("Invalid credentials"));
-        return ApiResponse.ok(AuthResponse.bearer(jwtService.generateToken(UserPrincipal.from(user))));
+
+        String accessToken = jwtService.generateToken(UserPrincipal.from(user));
+        return ApiResponse.ok(AuthResponse.of(
+            user.getId(),
+            user.getEmail(),
+            user.getUsername(),
+            accessToken,
+            null // refreshToken non ancora implementato
+        ));
     }
 
     public ResponseEntity<ApiResponse<CheckEmailResponse>> checkEmail(@Valid CheckEmailRequest request) {

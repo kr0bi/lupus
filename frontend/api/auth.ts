@@ -32,9 +32,20 @@ export type ApiResponse<T> = {
   message?: string;
 };
 
+export type UserInfo = {
+  id: string;
+  email: string;
+  username: string;
+};
+
 export type AuthTokens = {
   accessToken: string;
-  tokenType: string;
+  refreshToken?: string;
+};
+
+export type AuthResponse = {
+  user: UserInfo;
+  tokens: AuthTokens;
 };
 
 export async function checkEmail(email: string): Promise<{ exists: boolean }> {
@@ -52,9 +63,9 @@ export async function checkEmail(email: string): Promise<{ exists: boolean }> {
 export async function loginWithPassword(params: {
   usernameOrEmail: string;
   password: string;
-}): Promise<AuthTokens> {
+}): Promise<AuthResponse> {
   try {
-    const res = await apiClient.post<ApiResponse<AuthTokens>>(
+    const res = await apiClient.post<ApiResponse<AuthResponse>>(
       "/auth/login",
       params
     );
@@ -68,9 +79,9 @@ export async function registerWithEmail(params: {
   email: string;
   username: string;
   password: string;
-}): Promise<AuthTokens> {
+}): Promise<AuthResponse> {
   try {
-    const res = await apiClient.post<ApiResponse<AuthTokens>>(
+    const res = await apiClient.post<ApiResponse<AuthResponse>>(
       "/auth/register",
       params
     );

@@ -60,7 +60,7 @@ class AuthServiceTest {
 
         assertNotNull(responseEntity);
         assertNotNull(responseEntity.getBody());
-        assertEquals("token", responseEntity.getBody().data().accessToken());
+        assertEquals("token", responseEntity.getBody().data().tokens().accessToken());
         ArgumentCaptor<UserEntity> userCaptor = ArgumentCaptor.forClass(UserEntity.class);
         verify(userRepository).save(userCaptor.capture());
         UserEntity saved = userCaptor.getValue();

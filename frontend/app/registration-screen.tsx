@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useAuthStore } from "@/store/auth-store";
 import { StyleSheet } from "react-native";
 import { ThemedView } from "@/components/themed-view";
 import { ThemedText } from "@/components/themed-text";
+import { useRouter } from "expo-router";
 
 import {
   checkEmail,
@@ -16,10 +18,13 @@ import { NewUserForm } from "@/components/auth/new-user-form";
 type Step = "email" | "existing-user" | "new-user";
 
 export default function RegistrationScreen() {
+  const router = useRouter();
   const [step, setStep] = useState<Step>("email");
   const [email, setEmail] = useState("");
   const [checkingEmail, setCheckingEmail] = useState(false);
   const [globalError, setGlobalError] = useState<string | null>(null);
+
+  const loginFromAuthResponse = useAuthStore((s) => s.loginFromAuthResponse);
 
   const handleEmailSubmit = async ({ email }: { email: string }) => {
     setGlobalError(null);
@@ -45,15 +50,21 @@ export default function RegistrationScreen() {
   }: {
     password: string;
   }) => {
+    console.log("handleExistingUserSubmit called with:", { email, password: "***" });
     setGlobalError(null);
     try {
+      console.log("Calling loginWithPassword...");
       const auth = await loginWithPassword({
         usernameOrEmail: email,
         password,
       });
-      // TODO: salva token + naviga al gioco
-      console.log("Logged in:", auth.accessToken);
+      console.log("Login successful:", auth);
+
+      await loginFromAuthResponse(auth);
+      console.log("Auth response saved to store");
+      // La Home si aggiorna automaticamente tramite lo store
     } catch (err) {
+      console.error("Login error:", err);
       if (err instanceof AuthError) {
         setGlobalError(err.message || "Email o password non corretti.");
       } else {
@@ -72,8 +83,9 @@ export default function RegistrationScreen() {
     setGlobalError(null);
     try {
       const auth = await registerWithEmail({ email, username, password });
-      // TODO: salva token + naviga
-      console.log("Registered:", auth.accessToken);
+
+      await loginFromAuthResponse(auth);
+      // La Home si aggiorna automaticamente tramite lo store
     } catch (err) {
       if (err instanceof AuthError) {
         setGlobalError(err.message || "Registrazione fallita.");

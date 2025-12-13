@@ -2,6 +2,7 @@ package com.lurkerz.lupus.auth;
 
 import com.lurkerz.lupus.auth.dto.AuthResponse;
 import com.lurkerz.lupus.auth.dto.RegisterRequest;
+import com.lurkerz.lupus.common.ApiResponse;
 import com.lurkerz.lupus.common.Role;
 import com.lurkerz.lupus.user.UserEntity;
 import com.lurkerz.lupus.user.UserRepository;
@@ -12,6 +13,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -54,10 +56,11 @@ class AuthServiceTest {
             return user;
         });
 
-        AuthResponse response = authService.register(request);
+        ResponseEntity<ApiResponse<AuthResponse>> responseEntity = authService.register(request);
 
-        assertNotNull(response);
-        assertEquals("token", response.accessToken());
+        assertNotNull(responseEntity);
+        assertNotNull(responseEntity.getBody());
+        assertEquals("token", responseEntity.getBody().data().accessToken());
         ArgumentCaptor<UserEntity> userCaptor = ArgumentCaptor.forClass(UserEntity.class);
         verify(userRepository).save(userCaptor.capture());
         UserEntity saved = userCaptor.getValue();

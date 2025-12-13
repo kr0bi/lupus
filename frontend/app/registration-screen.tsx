@@ -47,9 +47,12 @@ export default function RegistrationScreen() {
   }) => {
     setGlobalError(null);
     try {
-      const auth = await loginWithPassword({ email, password });
+      const auth = await loginWithPassword({
+        usernameOrEmail: email,
+        password,
+      });
       // TODO: salva token + naviga al gioco
-      console.log("Logged in:", auth.user);
+      console.log("Logged in:", auth.accessToken);
     } catch (err) {
       if (err instanceof AuthError) {
         setGlobalError(err.message || "Email o password non corretti.");
@@ -70,7 +73,7 @@ export default function RegistrationScreen() {
     try {
       const auth = await registerWithEmail({ email, username, password });
       // TODO: salva token + naviga
-      console.log("Registered:", auth.user);
+      console.log("Registered:", auth.accessToken);
     } catch (err) {
       if (err instanceof AuthError) {
         setGlobalError(err.message || "Registrazione fallita.");
